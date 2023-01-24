@@ -19,10 +19,11 @@ length' (x:xs) = 1 + length' xs
 reverseList :: [a] -> [a]
 reverseList [] = []
 reverseList [y] = [y]
-reverseList (x:xs) = 
+reverseList [y] = [y]
 
 main = do
   print (head' [3])
   print (tail' [2])
   print (get' [1,2,3] 2)
   print (length' [1,2,3,4,6,5])
+  print (reverseList [1])
