@@ -2,7 +2,7 @@
 length' :: [a] -> Int
 length' xs = case xs of
     [] -> 0
-    x:xs -> 1 + length' xs
+    (x:xs) -> 1 + length' xs
 
 -- Get first element of list
 head' :: [a] -> Maybe a
@@ -74,8 +74,9 @@ concat' a b = concat' (concat' (a) ([justTransform(head' (b))])) (tail' b)
 
 --map' :: (a -> b) -> [a] -> [b]
 
--- given a list and an index, divide the list into two lists
--- at the index
+-- given a list and an index, 
+-- divide the list into two lists
+-- after/at the index
 splitList :: Int -> [a] -> ([a], [a])
 splitList 0 a = ([justTransform(head' a)], (tail' a))
 splitList n (y:ys) = 
@@ -124,3 +125,28 @@ isPalindrome a =
         then False
     else 
         isPalindrome (getSublist 1 ((length' a) - 1) a)
+
+
+-- do a cons/uncons
+uncons' :: [a] -> Maybe(a, [a])
+uncons' x = case x of
+    [] -> Nothing
+    (x:xs) -> Just(x, xs)
+
+-- non parameterized type
+-- "data" <TypeName> = <ConstructorName> [List of Types]
+data Task1 = BasicTask1 String Int
+a :: Task1
+a = BasicTask1 "test" 90
+
+-- how do we make task objects?
+-- have expressions of that object type
+-- DIFFERENT FROM FUNCTIONS!
+assignment1 :: Task1
+assignment1 = BasicTask1 "Do assignment 1" 60
+
+-- what's the difference between writing
+-- a constructor function and a direct cons
+-- invocation (the former feels cleaerer...)
+constructBasicTask :: String -> Int -> Task1
+constructBasicTask a b = BasicTask1 a b 
