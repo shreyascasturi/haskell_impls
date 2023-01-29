@@ -1,29 +1,126 @@
-head' :: [a] -> Maybe a
-head' [] = Nothing
-head' (x:xs) = Just x
-
-tail' :: [a] -> Maybe a
-tail' [] = Nothing
-tail' [y] = Just y
-tail' (x:xs) = tail' xs
-
-get' :: [a] -> Int -> Maybe a
-get' [] _ = Nothing
-get' (x:xs) 0 = Just x
-get' (x:xs) b = get' xs (b - 1)
-
+-- Implementation of basic list methods, assuming list exists
 length' :: [a] -> Int
-length' [] = 0
-length' (x:xs) = 1 + length' xs
+length' xs = case xs of
+    [] -> 0
+    x:xs -> 1 + length' xs
 
-reverseList :: [a] -> [a]
-reverseList [] = []
-reverseList [y] = [y]
-reverseList [y] = [y]
+-- Get first element of list
+head' :: [a] -> Maybe a
+head' xs = case xs of
+    [] -> Nothing
+    x:xs -> Just x
 
-main = do
-  print (head' [3])
-  print (tail' [2])
-  print (get' [1,2,3] 2)
-  print (length' [1,2,3,4,6,5])
-  print (reverseList [1])
+-- Get last element of list
+last' :: [a] -> Maybe a
+last' [] = Nothing
+last' [x] = Just x
+last' (x:xs) = last' xs
+
+-- get everything but the first element
+tail' :: [a] -> [a]
+tail' [] = []
+tail' [a] = tail' []
+tail' (x:xs) = xs 
+
+-- get everything but the last element
+init' :: [a] -> [a]
+init' [] = []
+init' [a] = init' []
+init' (x:xs) = x:(init' xs)
+
+get' :: Int -> [a] -> Maybe a
+get' _ [] = Nothing
+get' 0 (y:ys) = Just y
+get' a (y:ys) = if a < 0 then Nothing else get' (a - 1) ys
+
+-- Get a value out of a Maybe
+justTransform :: Maybe a -> a
+justTransform (Just a) = a
+justTransform Nothing = undefined
+
+-- reverse a list
+reverse' :: [a] -> [a]
+reverse' [] = []
+reverse' [a] = [a]
+reverse' (x:xs) = (justTransform (last' (x:xs))):(reverse' (init' (x:xs)))
+
+-- given two lists, add them together
+-- [1,2,3,4], [5] = reverse (5:[4,3,2,1])
+-- [1,2,3,4,5], [6, 7, 8] 
+concat' :: [a] -> [a] -> [a]
+concat' [] [] = []
+concat' [] b = b
+concat' a [] = concat' ([]) (a)
+concat' a [b] = reverse' (b:(reverse' a))
+concat' a b = concat' (concat' (a) ([justTransform(head' (b))])) (tail' b) 
+
+
+-- given a list, get an n-element sublist from the k-th index
+-- getNSubsetFromK :: Int -> Int -> [a] -> [a]
+-- getNSubsetFromK _ _ [] = []
+-- getNSubsetFromK _ _ [a] = [a]
+-- getNSubsetFromK n k (y:ys) =
+--     if (n > (length' (y:ys))) then
+--         []
+--     else if (k <= 0) then
+--         []
+--     else if (k >= (length' (y:ys))) then
+--         []
+--     else
+--         [(justTransform (get' k (y:ys)))] ++ (getNSubsetFromK (n - 1) (k + 1) ys)
+
+
+
+
+--map' :: (a -> b) -> [a] -> [b]
+
+-- given a list and an index, divide the list into two lists
+-- at the index
+splitList :: Int -> [a] -> ([a], [a])
+splitList 0 a = ([justTransform(head' a)], (tail' a))
+splitList n (y:ys) = 
+    if (n >= ((length' (y:ys)) - 1))
+        then ((y:ys), [])
+    else if (n < 0) 
+        then ([], (y:ys))
+    else 
+        ((concat' [y] (fst (splitList (n - 1) (ys)))), snd (splitList (n - 1) (ys)))
+
+-- given a starting index, get the rest of the list
+getSublistFromN :: Int -> [a] -> [a]
+getSublistFromN 0 a = a
+getSublistFromN _ [] = []
+getSublistFromN n b = 
+    if (n > length' (b) || (n < 0)) 
+        then [] 
+    else
+        concat' [(justTransform (last' (fst (splitList n b))))] (snd (splitList n b))
+
+-- given a starting index, ending index, and list,
+-- get a sublist of [index .. end index - 1]
+-- getSublist 2 4 [1,2,3,4,5,6] => [3,4]
+-- getSublist 2 4 [1,2,3,4,5,6] 
+    -- getSublist 0 2 [3,4,5,6]
+getSublist :: Int -> Int -> [a] -> [a] 
+getSublist 0 0 a = []
+getSublist _ _ [] = []
+getSublist 0 k a = fst (splitList (k - 1) a)  
+getSublist n k (y:ys) =
+    if (n < 0 || k < 0) then []
+    else getSublist 0 (k - n) (getSublistFromN n (y:ys))
+
+-- a = [1,2,3,4,5,6]
+-- getSublist 0 4 -> [1,2,3]
+-- getSublist 0 (length' a) a -> [1,2,3,4,5,6]
+-- getSublist base -> we get the n-th element
+-- getSublist n k a -> get n-th element... 
+-- given a list, determine if its contents are palindrome
+isPalindrome :: Eq a => [a] -> Bool
+isPalindrome [] = True
+isPalindrome [a] = True
+isPalindrome [a, b] = if a == b then True else False 
+isPalindrome a = 
+    if (justTransform(head' a) /= justTransform(last' a)) 
+        then False
+    else 
+        isPalindrome (getSublist 1 ((length' a) - 1) a)
