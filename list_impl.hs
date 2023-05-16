@@ -135,7 +135,10 @@ uncons' x = case x of
 
 -- non parameterized type
 -- "data" <TypeName> = <ConstructorName> [List of Types]
-data Task1 = BasicTask1 String Int
+data Task1 = 
+    BasicTask1 String Int 
+    | ComplexTask1 String Int Double 
+
 a :: Task1
 a = BasicTask1 "test" 90
 
@@ -150,3 +153,33 @@ assignment1 = BasicTask1 "Do assignment 1" 60
 -- invocation (the former feels cleaerer...)
 constructBasicTask :: String -> Int -> Task1
 constructBasicTask a b = BasicTask1 a b 
+
+
+complexTaskFirst :: Task1
+complexTaskFirst = ComplexTask1 "make complex" 50 42.5
+
+getFloatFromTask :: Task1 -> Maybe Double
+getFloatFromTask task = case task of
+    BasicTask1 _ _ -> Nothing 
+    ComplexTask1 a b c -> Just c
+
+--data PolymorphicTask a =
+ --   BasicTaskPoly a 
+
+-- Problem 8 - elimnate consecutive duplicates of list elements
+compressList :: [a] -> [a]
+compressList [] = []
+compressList [a] = [a]
+compressList (y:ys) 
+ 
+ -- [1,1,2,3,3,3,4] -> newList = [1], oldList = [1,2,3,3,3,4]
+ -- compressList [1,1,2,3,3,3,4]
+ -- => concat (compressList [y])
+-- 
+-- assume we had a blank list
+-- we check the first element and trivially add it
+-- for the next elements
+-- if the next element(s) are equivalent to the last
+    -- element of the new list (i.e., equiv to last')
+    -- then skip and do: concat newList (compressList ys)
+    -- otherwise concat (concat newList [y]) (compressList ys)
