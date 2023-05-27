@@ -10,9 +10,7 @@ toDigits x = if x <= 0 then [] else
 -- but reversed.
 -- Ex: toDigitsRev 1234 -> [4, 3, 2, 1]
 toDigitsRev :: Integer -> [Integer]
-toDigitsRev x = if x <= 0 then [] else
-    reverse (toDigits x)
-
+toDigitsRev x = reverse (toDigits x)
 
 doubleEveryOtherSimple :: [Integer] -> [Integer]
 doubleEveryOtherSimple [] = []
@@ -27,6 +25,27 @@ doubleEveryOther :: [Integer] -> [Integer]
 doubleEveryOther [] = []
 doubleEveryOther x = reverse (doubleEveryOtherSimple (reverse x))
 
+-- find length of a number/number of digits
+lengthOfNumber :: Integer -> Integer 
+lengthOfNumber 0 = 0
+lengthOfNumber x = 1 + (lengthOfNumber (x `div` 10))
+
+-- sumDigits: given a list of ints, get the sum of the digits
+-- of the ints.
 sumDigits :: [Integer] -> Integer
 sumDigits [] = 0
-sumDigits (y:ys) = 
+sumDigits (y:ys) = if (lengthOfNumber y) >= 2 
+    then (sumDigits (toDigits y)) + (sumDigits ys)
+    else y + (sumDigits ys)
+
+-- given a potential credit card number, check if number is potentially valid
+validate :: Integer -> Bool
+validate x = if ((sumDigits (doubleEveryOther (toDigits x))) `mod` 10) == 0 
+    then True 
+    else False
+
+type Peg = String
+type Move = (Peg, Peg)
+hanoi :: Integer -> Peg -> Peg -> Peg -> [Move]
+hanoi 0 _ _ _ = [("","")]
+hanoi x p1 p2 p3 =
