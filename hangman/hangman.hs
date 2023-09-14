@@ -1,26 +1,6 @@
 import Data.List
 import Data.Maybe
 
-
--- let there be a tuple which represents state:
--- (input, word visualization, actual word, number of remaining chances)
--- We want a function "generateNewState" :: [Char] -> [Char] -> [Char] -> Int -> (empty str, updated vis, actual word, updated num of chances)
-
--- When I enter a character, I must:
--- 1. Determine if it is/isn't in the string.
--- 2a. If in string, then determine if user already found that char at that occurrence.
-    -- 2a.1. If not already found, then update word visualization, keep amount of remaining chances same
-    -- 2a.2 If already found, then do not change word vis, decrement remaining chances
--- 2b -- If not in string, then do not change word vis, decrement remaining chances.
-
--- I need a function to create a [Char] with "-----", with dashes
--- I need a function to determine index of char in the string.
--- Really, I need one function to determine if all occurrences of the input char have been found
-    -- or if there is still something left.
-    -- if there is something left, then invoke the indexOfChar string.
-
--- check if the char is in the string to begin with. This is the first
-    -- function invoked in the char-checking logic
 checkIfCharIsInString :: Char -> [Char] -> Bool
 checkIfCharIsInString _ [] = False
 checkIfCharIsInString x [y] = if x == y then True else False
@@ -64,3 +44,33 @@ secondElemOfTuple (_, b, _) = b
 
 thirdElemOfTuple :: (a, b, c) -> c
 thirdElemOfTuple (_, _, c) = c
+
+hasAllDashes :: [Char] -> Bool
+hasAllDashes [] = False
+hasAllDashes [x] = if x == '-' then True else False
+hasAllDashes (y:ys) = if y == '-' then (hasAllDashes ys) else False
+
+printTuple :: [Char] -> Int -> IO()
+printTuple visString remGuesses = do 
+    putStrLn ("(vis string: " ++ visString ++ ", remGuesses: " ++ (show remGuesses) ++ ")")    
+
+askForGuess :: [Char] -> [Char] -> Int -> IO()
+askForGuess visString realString remChances = do
+                                            putStrLn "please enter a character: "
+                                            guessChar <- getChar
+                                            putStrLn ("character entered was: " ++ (show guessChar))
+                                            let newState = tryGuess guessChar visString realString remChances
+                                            printTuple (firstElemOfTuple newState) (thirdElemOfTuple newState)
+                                            if hasAllDashes (secondElemOfTuple newState) 
+                                            then putStrLn "solved hangman!"
+                                            else if thirdElemOfTuple newState == 0 
+                                                 then putStrLn "you failed" 
+                                                 else askForGuess (firstElemOfTuple newState) (secondElemOfTuple newState) (thirdElemOfTuple newState)
+main :: IO ()
+main = do
+    putStrLn "please enter a word: "
+    secretWord <- getLine 
+    let lengthOfWord = (length (secretWord))
+    let visString = (createCharOfDashes lengthOfWord)
+    let numOfGuesses = 5
+    askForGuess visString secretWord numOfGuesses
