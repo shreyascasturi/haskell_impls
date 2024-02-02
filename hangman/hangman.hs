@@ -1,5 +1,6 @@
 import Data.List
 import Data.Maybe
+import System.IO
 
 checkIfCharIsInString :: Char -> [Char] -> Bool
 checkIfCharIsInString _ [] = False
@@ -12,8 +13,8 @@ indexOfChar y [x] = if y == x then Just 0 else Nothing
 indexOfChar y (x:xs) = if y == x 
                        then Just 0 
                        else 
-                        if (isNothing (indexOfChar y xs)) 
-                        then Nothing 
+                        if (isNothing (indexOfChar y xs))
+                        then Nothing
                         else Just (1 + fromMaybe 0 (indexOfChar y xs))
 
 
@@ -52,7 +53,7 @@ hasAllDashes (y:ys) = if y == '-' then (hasAllDashes ys) else False
 
 printTuple :: [Char] -> Int -> IO()
 printTuple visString remGuesses = do 
-    putStrLn ("(vis string: " ++ visString ++ ", remGuesses: " ++ (show remGuesses) ++ ")")    
+    putStrLn ("(vis string: " ++ visString ++ ", remGuesses: " ++ (show remGuesses) ++ ")")
 
 askForGuess :: [Char] -> [Char] -> Int -> IO()
 askForGuess visString realString remChances = do
