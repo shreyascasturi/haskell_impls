@@ -13,4 +13,3 @@ How do we:
 2. Allow the user to backspace/delete characters?
 3. Move the cursor around using the arrow keys?
 4. Save/write the file out?
-

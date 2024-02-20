@@ -1,3 +1,3 @@
--- try and open a file
-oFile :: String -> IO Handle
-oFile fileName = openFile 
+addBack :: [a] -> a -> [a]
+addBack [] x = [x]
+addBack (x:xs) y = x:(addBack xs y)
