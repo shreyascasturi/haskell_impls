@@ -20,3 +20,12 @@ myreverse :: [a] -> [a]
 myreverse [] = []
 myreverse [x] = [x]
 myreverse (y:ys) = myappend (myreverse ys) [y]
+
+
+(+++) :: [a] -> [a] -> [a]
+[] +++ b = b 
+a +++ [] = a
+[a] +++ (b:bs) = [] +++ bs 
+
+-- [1, 2, 3, 4] +++ [5, 6, 7, 8]
+-- [1,2,3,4] : [5] +++ bs
