@@ -56,8 +56,3 @@ elementAt (x:xs) n = elementAt xs (n - 1)
 
 
             
--- Leetcode 1: Two Sum: given a list and a target int, return indices of the two numbers s.t they equal the target int
-twoSum :: [Int] -> Int -> (Int, Int)
-twoSum (x:xs) target = 
-
-transformListToMap :: [Int] -> [(Int, Int)]
