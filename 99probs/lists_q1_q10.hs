@@ -53,6 +53,17 @@ elementAt list 1 = head' list
 elementAt [] n = Nothing
 elementAt (x:xs) n = elementAt xs (n - 1)
     
+-- Problem 4: Find the number of elements
+myLength :: [a] -> Int
+myLength list = case list of
+    [] -> 0
+    (x:xs) -> 1 + (myLength xs)
+
+-- Problem 5: Reverse a list
+myReverse :: [a] -> [a]
+myReverse list = case list of
+    [] -> []
+    (x:xs) -> (myReverse xs) ++ [x]
 
 
             
